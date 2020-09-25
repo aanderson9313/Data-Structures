@@ -35,8 +35,17 @@ class BSTNode:
             else:
                 self.left.insert(value)
             #otherwise recursively call insert on the right node
-            else: 
-                self.right.insert(value)
+        if value >= self.value:
+            #otherwise
+                #check if none
+                if not self.right:
+                    # add new node to the right
+                    right_node = BSTNode(value)
+                    self.right = right_node
+                    #otherwise
+                else: 
+                    #call insert on the
+                    self.right.insert(value)
             
 
     # Return True if the tree contains the value
@@ -52,21 +61,25 @@ class BSTNode:
             if not self.left:
                 #return False
                 return False
-            #otherwise
+            #otherwise if left value == target return true
+            elif self.left.value == target:
+                return True
             else: 
                 #return a call of 'contains' on the Left child passing in the target value
                 return self.left.contains(target)
             #otherwise the target is > the value of the current node
-            elif target > self.value:
-                #if theres no Right child already there
-                if not self.right:
-                    #return False
-                    return False
-                #otherwise
-                else:
-                    #return call of 'contains' on the right child passing in the target value
-                    return self.right.contains(target)
-                else: print(f"could not locate {target} in tree")
+        elif target > self.value:
+            #if theres no Right child already there
+            if not self.right:
+                #return False
+                return False
+            #otherwise if right == target return true
+            elif self.right.value == target:
+                return True
+            else:
+            #return call of 'contains' on the right child passing in the target value
+                return self.right.contains(target)
+        else: print(f"could not locate {target} in tree")
 
     # Return the maximum value found in the tree
     def get_max(self):
@@ -76,6 +89,7 @@ class BSTNode:
             print('tree is empty')
             return None
         
+        #recursive
         #check if there is node to the right
         if not self.right:
             #if true return value
@@ -83,6 +97,21 @@ class BSTNode:
         #otherwise return call to get_max on the right child
         else:
             return self.right.get_max()
+        
+        #iterative
+        #intialize
+        max_value = self.value
+        #get a ref to the current node
+        current_node = self
+        #Loop while there is a node
+        while current_node:
+            #if current > max value, update max_value
+            if current_node.value > max_value:
+                max_value = current_node.value
+            #move onto the next right node
+            current_node = self.right
+            #return max value
+            return max_value
 
     # Call the function `fn` on the value of each node
     def for_each(self, fn):
@@ -93,7 +122,7 @@ class BSTNode:
             #call the fn on the left value
             self.left.for_each(fn)
         #if there is a node on the right
-        else:
+        if self.right:
             #call fn on the right value
             self.right.for_each(fn)
 
@@ -102,17 +131,49 @@ class BSTNode:
     # Print all the values in order from low to high
     # Hint:  Use a recursive, depth first traversal
     def in_order_print(self):
-        pass
+        if self.left:
+            self.left.in_order_print()
+        print(self.value)
+        if self.right:
+            self.right.in_order_print()
 
     # Print the value of every node, starting with the given node,
     # in an iterative breadth first traversal
     def bft_print(self):
-        pass
+        #uses queues
+        #set current_node
+        current_node = self
+        #create queue, intitialize with current_node
+        queue = [current_node]
+        
+        #while theres data in the queue
+        while queue:
+            #dequeue from queue to the current_node
+            current_node = queue.pop(0)
+            print(current_node.value)
+            if current_node.left:
+                queue.append(current_node.left)
+            if current_node.right:
+                queue.append(current_node.right)
 
     # Print the value of every node, starting with the given node,
     # in an iterative depth first traversal
     def dft_print(self):
-        pass
+        #uses queues
+        #set current_node
+        current_node = self
+        #create queue, intitialize with current_node
+        stack = [current_node]
+        #while theres data in the queue
+        while stack:
+            #pop from stack to current_node
+            current_node = stack.pop()
+            print(current_node.value)
+            if current_node.left:
+                stack.append(current_node.left)
+            if current_node.right:
+                stack.append(current_node.right)
+
 
     # Stretch Goals -------------------------
     # Note: Research may be required
@@ -145,6 +206,6 @@ print("elegant methods")
 print("pre order")
 bst.pre_order_dft()
 print("in order")
-bst.in_order_dft()
+bst.in_order_print()
 print("post order")
 bst.post_order_dft()  
